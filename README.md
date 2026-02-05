@@ -13,6 +13,11 @@
 <details open>
 <summary><b>🇬🇧 English Description (Click to expand)</b></summary>
 
+> 🧩 This mod was inspired by and originally based on the work of  
+> [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**.  
+> The codebase was significantly reworked and adapted for a minimalist HUD-based implementation.
+
+
 ## Description
 A minimalist mod for **Lethal Company** that adds a functional minimap directly to your HUD. No more running back to the ship just to check the path or scout for turrets!
 
@@ -46,6 +51,11 @@ A minimalist mod for **Lethal Company** that adds a functional minimap directly 
 
 <details>
 <summary><b>🇷🇺 Русское описание (Нажмите, чтобы развернуть)</b></summary>
+
+> 🧩 Данный мод был вдохновлён и изначально основан на проекте  
+> [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) от **tyzeron**.  
+> Код был существенно переработан и адаптирован под минималистичную миникарту в HUD.
+
 
 ## Описание
 Минималистичный мод для **Lethal Company**, который добавляет функциональную миникарту прямо в ваш HUD. Больше не нужно бегать на корабль, чтобы проверить дорогу или расположение турелей!
