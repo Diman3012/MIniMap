@@ -10,7 +10,7 @@
 
 ---
 
-<details>
+<details open>
 <summary><b>🇬🇧 English Description (Click to expand)</b></summary>
 
 ## Description
@@ -44,7 +44,7 @@ A minimalist mod for **Lethal Company** that adds a functional minimap directly 
 
 ---
 
-<details open>
+<details>
 <summary><b>🇷🇺 Русское описание (Нажмите, чтобы развернуть)</b></summary>
 
 ## Описание
