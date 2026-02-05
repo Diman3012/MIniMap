@@ -2,36 +2,38 @@
 using HarmonyLib;
 using UnityEngine;
 
-[BepInPlugin("minimal.minimap", "Minimal Minimap", "1.0.0")]
-public class MinimalMinimap : BaseUnityPlugin
+namespace MIniMap
 {
-    public static MinimalMinimap Instance;
-    public static MinimapData Data;
-
-    private Harmony harmony;
-
-    private void Awake()
+    [BepInPlugin("com.diman3012.minimap", "Minimal Minimap", "1.0.0")]
+    public class MinimalMinimap : BaseUnityPlugin
     {
-        Instance = this;
-        Data = new MinimapData();
+        public static MinimalMinimap Instance;
+        public static MinimapData Data;
+        private Harmony harmony;
 
-        harmony = new Harmony("minimal.minimap");
-        harmony.PatchAll();
+        private void Awake()
+        {
+            Instance = this;
+            Data = new MinimapData();
 
-        Logger.LogInfo("Minimal Minimap loaded");
+            harmony = new Harmony("com.diman3012.minimap");
+            harmony.PatchAll();
+
+            Logger.LogInfo("Minimal Minimap (MIniMap) loaded successfully!");
+        }
     }
-}
 
-public class MinimapData
-{
-    // 🔧 НАСТРОЙКИ МИНИКАРТЫ
-    public bool Enabled = true;
-    public int Size = 200;
-    public float XOffset = -10f;
-    public float YOffset = -10f;
-    public float Zoom = 20f;
-    public bool AutoRotate = true;
+    public class MinimapData
+    {
+        // 🔧 НАСТРОЙКИ
+        public bool Enabled = true;
+        public int Size = 200;
+        public float XOffset = -10f;
+        public float YOffset = -10f;
+        public float Zoom = 20f;
+        public bool AutoRotate = true;
 
-    // 🎮 УПРАВЛЕНИЕ
-    public KeyCode SwitchKey = KeyCode.F2; // Клавиша смены игрока
+        // 🎮 УПРАВЛЕНИЕ
+        public KeyCode SwitchKey = KeyCode.F2;
+    }
 }
