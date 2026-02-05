@@ -1,33 +1,19 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
-// Общие сведения об этой сборке предоставляются следующим набором
-// набора атрибутов. Измените значения этих атрибутов для изменения сведений,
-// связанные со сборкой.
 [assembly: AssemblyTitle("MIniMap")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Minimalistic Minimap mod for Lethal Company")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Diman3012")]
 [assembly: AssemblyProduct("MIniMap")]
-[assembly: AssemblyCopyright("Copyright ©  2026")]
+[assembly: AssemblyCopyright("Copyright © 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Установка значения False для параметра ComVisible делает типы в этой сборке невидимыми
-// для компонентов COM. Если необходимо обратиться к типу в этой сборке через
-// COM, задайте атрибуту ComVisible значение TRUE для этого типа.
 [assembly: ComVisible(false)]
-
-// Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
 [assembly: Guid("4d061c1c-dea6-41cf-ac43-cd97a23e03fa")]
 
-// Сведения о версии сборки состоят из указанных ниже четырех значений:
-//
-//      Основной номер версии
-//      Дополнительный номер версии
-//      Номер сборки
-//      Редакция
-//
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: TargetFramework(".NETFramework,Version=v4.8", FrameworkDisplayName = ".NET Framework 4.8")]
