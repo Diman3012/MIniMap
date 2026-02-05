@@ -30,7 +30,8 @@ public class MinimapData
     public float XOffset = -10f;
     public float YOffset = -10f;
     public float Zoom = 20f;
-
-    // Новая настройка для вращения
     public bool AutoRotate = true;
+
+    // 🎮 УПРАВЛЕНИЕ
+    public KeyCode SwitchKey = KeyCode.F2; // Клавиша смены игрока
 }
