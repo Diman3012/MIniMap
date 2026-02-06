@@ -22,6 +22,7 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 
 ## ✨ Features
 * **Always Active:** The radar camera stays enabled even when you are far from the ship.
+* **Toggle Visibility:** You can now hide or show the minimap at any time.
 * **Auto-Rotate:** The map aligns with your character's view direction for intuitive navigation.
 * **Smart Icons:** Player markers and terminal objects (turrets, mines, doors) remain correctly oriented and don't "flip" when the camera rotates.
 * **Target Locking (Override):** Prevent the game or other players from changing your radar target automatically.
@@ -30,6 +31,7 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 ## 🎮 Controls
 | Action | Key | Description |
 | :--- | :--- | :--- |
+| **Toggle Map** | `F2` | Shows or hides the minimap HUD |
 | **Toggle Override** | `F3` | Locks the current target (Prevents auto-switching) |
 | **Switch Target** | `F4` | Manually cycles to the next radar target |
 
@@ -54,6 +56,7 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 
 ## ✨ Особенности
 * **Постоянная работа:** Камера радара активна всегда, даже если вы глубоко в комплексе.
+* **Переключение видимости:** Теперь вы можете скрывать или показывать миникарту по желанию.
 * **Авто-поворот:** Карта вращается вслед за направлением взгляда вашего персонажа.
 * **Умные иконки:** Маркеры игроков и объектов (турели, мины, двери) сохраняют правильную ориентацию и не "кувыркаются" при повороте карты.
 * **Блокировка цели (Override):** Позволяет зафиксировать камеру на определенном объекте, запрещая игре или другим игрокам менять вашу цель.
@@ -62,6 +65,7 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 ## 🎮 Управление
 | Действие | Клавиша | Описание |
 | :--- | :--- | :--- |
+| **Вкл/Выкл карту** | `F2` | Скрыть или показать миникарту в интерфейсе |
 | **Блокировка (Override)** | `F3` | Фиксирует текущую цель (защита от авто-переключения) |
 | **Смена цели** | `F4` | Вручную переключает радар на следующий объект |
 
@@ -76,7 +80,7 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 
 ### 🏗️ Technical Details
 * **Namespace:** `MIniMap`
-* **Hooks:** Patches `PlayerControllerB` for UI and `ManualCameraRenderer` for rotation/target logic.
+* **Hooks:** Patches `PlayerControllerB` for UI toggling and `ManualCameraRenderer` for rotation/target logic.
 * **Network Sync:** Includes a `NetworkPrefabPatch` to ensure identification across clients using `Unity.Netcode`.
 
 Created by [Diman3012](https://github.com/Diman3012)
