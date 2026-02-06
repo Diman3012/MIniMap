@@ -37,56 +37,54 @@ namespace MIniMap
             minimapObject.transform.SetParent(HUDManager.Instance.playerScreenTexture.transform, false);
         }
 
-        [HarmonyPatch("Update")]
+        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
-        private static void UpdateMinimap()
+        private static void HandleHotkeys(PlayerControllerB __instance)
         {
-            if (minimapImage == null || StartOfRound.Instance == null) return;
+            if (!__instance.isPlayerControlled || !MinimalMinimap.Data.Enabled) return;
 
-            minimapImage.gameObject.SetActive(MinimalMinimap.Data.Enabled);
-            if (!MinimalMinimap.Data.Enabled) return;
+            // F3 - Переключение режима блокировки (Override)
+            if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
+            {
+                MinimalMinimap.Data.FreezeTarget = !MinimalMinimap.Data.FreezeTarget;
+                HUDManager.Instance.DisplayTip("Minimap", MinimalMinimap.Data.FreezeTarget ? "Override ON" : "Override OFF");
+            }
 
+            // F4 - Ручное переключение цели
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.SwitchKey))
             {
                 SwitchTarget();
             }
         }
 
+        // Логика переключения цели из референса
         private static void SwitchTarget()
         {
-            ManualCameraRenderer mapScreen = StartOfRound.Instance.mapScreen;
-            if (mapScreen == null) return;
+            ManualCameraRenderer map = StartOfRound.Instance.mapScreen;
+            if (map == null || map.radarTargets == null) return;
 
-            int nextIndex = CalculateValidTargetIndex(mapScreen.targetTransformIndex + 1);
-            mapScreen.SwitchRadarTargetAndSync(nextIndex);
+            int nextIndex = (map.targetTransformIndex + 1) % map.radarTargets.Count;
+
+            // Используем встроенный метод игры для синхронизации
+            map.SwitchRadarTargetAndSync(nextIndex);
         }
 
-        private static int CalculateValidTargetIndex(int startIndex)
+        // ПАТЧИ ДЛЯ БЛОКИРОВКИ АВТО-ПЕРЕКЛЮЧЕНИЯ
+
+        [HarmonyPatch(typeof(ManualCameraRenderer), "updateMapTarget")]
+        [HarmonyPrefix]
+        private static bool PreventAutoUpdate(ManualCameraRenderer __instance)
         {
-            ManualCameraRenderer map = StartOfRound.Instance.mapScreen;
-            int totalTargets = map.radarTargets.Count;
-            int currentIndex = startIndex % totalTargets;
+            // Если включена блокировка (F3), запрещаем игре менять цель автоматически
+            return !MinimalMinimap.Data.FreezeTarget;
+        }
 
-            for (int i = 0; i < totalTargets; i++)
-            {
-                int targetIdx = (currentIndex + i) % totalTargets;
-                var target = map.radarTargets[targetIdx];
-
-                if (target != null)
-                {
-                    PlayerControllerB player = target.transform.GetComponent<PlayerControllerB>();
-                    if (player != null)
-                    {
-                        if ((player.isPlayerControlled || player.isPlayerDead) && !player.isPlayerAlone)
-                            return targetIdx;
-                    }
-                    else
-                    {
-                        return targetIdx; // Например, радар-бустер
-                    }
-                }
-            }
-            return 0;
+        [HarmonyPatch(typeof(ManualCameraRenderer), "SwitchRadarTargetForward")]
+        [HarmonyPrefix]
+        private static bool PreventForwardSwitch()
+        {
+            // Запрещает переключение при нажатии кнопки на панели в корабле, если включен Freeze
+            return !MinimalMinimap.Data.FreezeTarget;
         }
     }
 }

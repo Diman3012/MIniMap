@@ -45,7 +45,9 @@ namespace MIniMap
         public bool AutoRotate = true;
 
         // 🎮 УПРАВЛЕНИЕ
-        public KeyCode SwitchKey = KeyCode.F2;
+        public bool FreezeTarget = false; // Состояние F3 (Override)
+        public KeyCode OverrideKey = KeyCode.F3;
+        public KeyCode SwitchKey = KeyCode.F4;
     }
 
     // КЛАСС ДЛЯ ПРОВЕРКИ НАЛИЧИЯ МОДА У ВСЕХ ИГРОКОВ
