@@ -43,6 +43,19 @@ namespace MIniMap
         {
             if (!__instance.isPlayerControlled || !MinimalMinimap.Data.Enabled) return;
 
+            // F2 - Вкл/Выкл отображение миникарты
+            if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.ToggleKey))
+            {
+                if (minimapObject != null)
+                {
+                    bool newState = !minimapObject.activeSelf;
+                    minimapObject.SetActive(newState);
+
+                    // Опционально: выводим подсказку, как при F3
+                    HUDManager.Instance.DisplayTip("Minimap", newState ? "Visible" : "Hidden");
+                }
+            }
+
             // F3 - Переключение режима блокировки (Override)
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
             {

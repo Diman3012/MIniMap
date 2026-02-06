@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using UnityEngine;
-using Unity.Netcode; // Добавлено для работы с NetworkObject
-using System.Reflection; // Добавлено для Reflection
-using System.Linq; // Добавлено для Aggregate
+using Unity.Netcode;
+using System.Reflection;
+using System.Linq;
 
 namespace MIniMap
 {
@@ -26,7 +26,6 @@ namespace MIniMap
         }
     }
 
-    // Автоматически генерируемый класс с инфой о плагине (стандарт BepInEx)
     public static class MyPluginInfo
     {
         public const string PLUGIN_GUID = "com.diman3012.minimap";
@@ -48,9 +47,9 @@ namespace MIniMap
         public bool FreezeTarget = false; // Состояние F3 (Override)
         public KeyCode OverrideKey = KeyCode.F3;
         public KeyCode SwitchKey = KeyCode.F4;
+        public KeyCode ToggleKey = KeyCode.F2; // Кнопка скрытия карты
     }
 
-    // КЛАСС ДЛЯ ПРОВЕРКИ НАЛИЧИЯ МОДА У ВСЕХ ИГРОКОВ
     [HarmonyPatch(typeof(NetworkManager))]
     internal static class NetworkPrefabPatch
     {
@@ -58,25 +57,21 @@ namespace MIniMap
         [HarmonyPatch(nameof(NetworkManager.SetSingleton))]
         private static void RegisterPrefab()
         {
-            // Создаем невидимый объект, который Unity.Netcode будет искать у всех клиентов
             var prefab = new GameObject(MyPluginInfo.PLUGIN_GUID + " Prefab");
             prefab.hideFlags |= HideFlags.HideAndDontSave;
             Object.DontDestroyOnLoad(prefab);
 
             var networkObject = prefab.AddComponent<NetworkObject>();
 
-            // Используем Reflection для установки Hash, чтобы не зависеть от Publicizer
             var fieldInfo = typeof(NetworkObject).GetField("GlobalObjectIdHash", BindingFlags.Instance | BindingFlags.NonPublic);
             if (fieldInfo != null)
             {
                 fieldInfo.SetValue(networkObject, GetHash(MyPluginInfo.PLUGIN_GUID));
             }
 
-            // Регистрируем префикс в сетевом менеджере
             NetworkManager.Singleton.PrefabHandler.AddNetworkPrefab(prefab);
         }
 
-        // Хеширование GUID для создания уникального ID префаба
         private static uint GetHash(string value)
         {
             return value?.Aggregate(17u, (current, c) => unchecked((current * 31) ^ c)) ?? 0u;
