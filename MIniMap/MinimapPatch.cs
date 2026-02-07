@@ -16,8 +16,6 @@ namespace MIniMap
         [HarmonyPostfix]
         private static void CreateMinimap()
         {
-            // Убрали проверку (!Enabled), чтобы объект создавался всегда,
-            // но его видимость будет зависеть от настройки.
             if (minimapObject != null)
                 return;
 
@@ -38,25 +36,26 @@ namespace MIniMap
 
             minimapObject.transform.SetParent(HUDManager.Instance.playerScreenTexture.transform, false);
 
-            // Сразу устанавливаем активность в зависимости от сохраненной настройки
             bool isEnabled = MinimalMinimap.Instance.ConfigEnabled.Value;
             minimapObject.SetActive(isEnabled);
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB), "Update")]
+        [HarmonyPatch("Update")]
         [HarmonyPostfix]
         private static void HandleHotkeys(PlayerControllerB __instance)
         {
-            if (!__instance.isPlayerControlled) return;
+            // Проверка: выполняем логику только для локального игрока, которым мы управляем
+            if (!__instance.IsOwner || !__instance.isPlayerControlled) return;
 
-            // F2 - Вкл/Выкл отображение миникарты + СОХРАНЕНИЕ
+            // Дополнительная проверка на сетевой менеджер (защита от багов)
+            if (__instance != GameNetworkManager.Instance.localPlayerController) return;
+
+            // F2 - Вкл/Выкл отображение миникарты
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.ToggleKey))
             {
-                // Переключаем значение в конфиге
                 bool newState = !MinimalMinimap.Instance.ConfigEnabled.Value;
-                MinimalMinimap.Instance.ConfigEnabled.Value = newState; // Это автоматически сохранит настройку в файл
+                MinimalMinimap.Instance.ConfigEnabled.Value = newState;
 
-                // Применяем визуально
                 if (minimapObject != null)
                 {
                     minimapObject.SetActive(newState);
@@ -64,10 +63,9 @@ namespace MIniMap
                 }
             }
 
-            // Проверка включена ли карта, прежде чем обрабатывать остальные кнопки
             if (!MinimalMinimap.Instance.ConfigEnabled.Value) return;
 
-            // F3 - Переключение режима блокировки (Override)
+            // F3 - Переключение режима блокировки
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
             {
                 MinimalMinimap.Data.FreezeTarget = !MinimalMinimap.Data.FreezeTarget;
