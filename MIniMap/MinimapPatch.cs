@@ -16,7 +16,9 @@ namespace MIniMap
         [HarmonyPostfix]
         private static void CreateMinimap()
         {
-            if (!MinimalMinimap.Data.Enabled || minimapObject != null)
+            // Убрали проверку (!Enabled), чтобы объект создавался всегда,
+            // но его видимость будет зависеть от настройки.
+            if (minimapObject != null)
                 return;
 
             minimapObject = new GameObject("MIniMap_UI");
@@ -35,26 +37,35 @@ namespace MIniMap
             }
 
             minimapObject.transform.SetParent(HUDManager.Instance.playerScreenTexture.transform, false);
+
+            // Сразу устанавливаем активность в зависимости от сохраненной настройки
+            bool isEnabled = MinimalMinimap.Instance.ConfigEnabled.Value;
+            minimapObject.SetActive(isEnabled);
         }
 
         [HarmonyPatch(typeof(PlayerControllerB), "Update")]
         [HarmonyPostfix]
         private static void HandleHotkeys(PlayerControllerB __instance)
         {
-            if (!__instance.isPlayerControlled || !MinimalMinimap.Data.Enabled) return;
+            if (!__instance.isPlayerControlled) return;
 
-            // F2 - Вкл/Выкл отображение миникарты
+            // F2 - Вкл/Выкл отображение миникарты + СОХРАНЕНИЕ
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.ToggleKey))
             {
+                // Переключаем значение в конфиге
+                bool newState = !MinimalMinimap.Instance.ConfigEnabled.Value;
+                MinimalMinimap.Instance.ConfigEnabled.Value = newState; // Это автоматически сохранит настройку в файл
+
+                // Применяем визуально
                 if (minimapObject != null)
                 {
-                    bool newState = !minimapObject.activeSelf;
                     minimapObject.SetActive(newState);
-
-                    // Опционально: выводим подсказку, как при F3
                     HUDManager.Instance.DisplayTip("Minimap", newState ? "Visible" : "Hidden");
                 }
             }
+
+            // Проверка включена ли карта, прежде чем обрабатывать остальные кнопки
+            if (!MinimalMinimap.Instance.ConfigEnabled.Value) return;
 
             // F3 - Переключение режима блокировки (Override)
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
@@ -70,25 +81,19 @@ namespace MIniMap
             }
         }
 
-        // Логика переключения цели из референса
         private static void SwitchTarget()
         {
             ManualCameraRenderer map = StartOfRound.Instance.mapScreen;
             if (map == null || map.radarTargets == null) return;
 
             int nextIndex = (map.targetTransformIndex + 1) % map.radarTargets.Count;
-
-            // Используем встроенный метод игры для синхронизации
             map.SwitchRadarTargetAndSync(nextIndex);
         }
-
-        // ПАТЧИ ДЛЯ БЛОКИРОВКИ АВТО-ПЕРЕКЛЮЧЕНИЯ
 
         [HarmonyPatch(typeof(ManualCameraRenderer), "updateMapTarget")]
         [HarmonyPrefix]
         private static bool PreventAutoUpdate(ManualCameraRenderer __instance)
         {
-            // Если включена блокировка (F3), запрещаем игре менять цель автоматически
             return !MinimalMinimap.Data.FreezeTarget;
         }
 
@@ -96,7 +101,6 @@ namespace MIniMap
         [HarmonyPrefix]
         private static bool PreventForwardSwitch()
         {
-            // Запрещает переключение при нажатии кнопки на панели в корабле, если включен Freeze
             return !MinimalMinimap.Data.FreezeTarget;
         }
     }

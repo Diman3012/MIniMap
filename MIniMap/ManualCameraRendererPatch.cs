@@ -17,7 +17,8 @@ namespace MIniMap
             ref PlayerControllerB ___targetedPlayer,
             ref Image ___compassRose)
         {
-            if (!MinimalMinimap.Data.Enabled || ___mapCamera == null)
+            // Заменили Data.Enabled на Instance.ConfigEnabled.Value
+            if (!MinimalMinimap.Instance.ConfigEnabled.Value || ___mapCamera == null)
                 return;
 
             ___mapCamera.enabled = true;

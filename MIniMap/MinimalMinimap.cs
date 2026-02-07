@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration; // Добавлено для работы с конфигом
 using HarmonyLib;
 using UnityEngine;
 using Unity.Netcode;
@@ -12,12 +13,20 @@ namespace MIniMap
     {
         public static MinimalMinimap Instance;
         public static MinimapData Data;
+
+        // Добавляем переменную конфигурации
+        public ConfigEntry<bool> ConfigEnabled;
+
         private Harmony harmony;
 
         private void Awake()
         {
             Instance = this;
             Data = new MinimapData();
+
+            // Инициализация конфига: 
+            // "General" - секция, "Enabled" - ключ, false - значение по умолчанию (выключено)
+            ConfigEnabled = Config.Bind("General", "Enabled", false, "Enable or disable the minimap");
 
             harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
@@ -35,8 +44,10 @@ namespace MIniMap
 
     public class MinimapData
     {
+        // Поле Enabled здесь больше не нужно, так как мы берем его из ConfigEnabled,
+        // но оставим остальные настройки.
+
         // 🔧 НАСТРОЙКИ
-        public bool Enabled = true;
         public int Size = 200;
         public float XOffset = -10f;
         public float YOffset = -10f;
@@ -44,10 +55,10 @@ namespace MIniMap
         public bool AutoRotate = true;
 
         // 🎮 УПРАВЛЕНИЕ
-        public bool FreezeTarget = false; // Состояние F3 (Override)
+        public bool FreezeTarget = false;
         public KeyCode OverrideKey = KeyCode.F3;
         public KeyCode SwitchKey = KeyCode.F4;
-        public KeyCode ToggleKey = KeyCode.F2; // Кнопка скрытия карты
+        public KeyCode ToggleKey = KeyCode.F2;
     }
 
     [HarmonyPatch(typeof(NetworkManager))]
