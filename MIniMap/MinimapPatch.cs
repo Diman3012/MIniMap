@@ -44,13 +44,13 @@ namespace MIniMap
         [HarmonyPostfix]
         private static void HandleHotkeys(PlayerControllerB __instance)
         {
-            // Проверка: выполняем логику только для локального игрока, которым мы управляем
-            if (!__instance.IsOwner || !__instance.isPlayerControlled) return;
+            // Проверка на локального игрока
+            if (!__instance.IsOwner || __instance != GameNetworkManager.Instance.localPlayerController) return;
 
-            // Дополнительная проверка на сетевой менеджер (защита от багов)
-            if (__instance != GameNetworkManager.Instance.localPlayerController) return;
+            // Позволяем коду работать, если игрок мертв или контролируется
+            if (!__instance.isPlayerControlled && !__instance.isPlayerDead) return;
 
-            // F2 - Вкл/Выкл отображение миникарты
+            // F2 - Вкл/Выкл миникарты
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.ToggleKey))
             {
                 bool newState = !MinimalMinimap.Instance.ConfigEnabled.Value;
@@ -65,34 +65,87 @@ namespace MIniMap
 
             if (!MinimalMinimap.Instance.ConfigEnabled.Value) return;
 
-            // F3 - Переключение режима блокировки
+            // F3 - Freeze / Override
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
             {
                 MinimalMinimap.Data.FreezeTarget = !MinimalMinimap.Data.FreezeTarget;
-                HUDManager.Instance.DisplayTip("Minimap", MinimalMinimap.Data.FreezeTarget ? "Override ON" : "Override OFF");
+                HUDManager.Instance.DisplayTip("Minimap",
+                    MinimalMinimap.Data.FreezeTarget ? "Override ON" : "Override OFF");
             }
 
-            // F4 - Ручное переключение цели
+            // F4 - Переключение вручную
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.SwitchKey))
             {
-                SwitchTarget();
+                if (MinimalMinimap.Data.FreezeTarget)
+                    SwitchTarget();
+            }
+
+            // Логика слежения за целью спектатора после смерти
+            if (__instance.isPlayerDead && __instance.spectatedPlayerScript != null)
+            {
+                // Если ручное управление выключено, синхронизируем карту с тем, на кого смотрим
+                if (!MinimalMinimap.Data.FreezeTarget)
+                {
+                    var map = StartOfRound.Instance.mapScreen;
+                    if (map != null && map.targetedPlayer != __instance.spectatedPlayerScript)
+                    {
+                        for (int i = 0; i < map.radarTargets.Count; i++)
+                        {
+                            var t = map.radarTargets[i];
+                            if (t != null && t.transform != null)
+                            {
+                                PlayerControllerB p = t.transform.GetComponent<PlayerControllerB>();
+                                if (p == __instance.spectatedPlayerScript)
+                                {
+                                    map.targetTransformIndex = i;
+                                    map.targetedPlayer = p;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         private static void SwitchTarget()
         {
-            ManualCameraRenderer map = StartOfRound.Instance.mapScreen;
+            var map = StartOfRound.Instance.mapScreen;
             if (map == null || map.radarTargets == null) return;
 
-            int nextIndex = (map.targetTransformIndex + 1) % map.radarTargets.Count;
-            map.SwitchRadarTargetAndSync(nextIndex);
+            int count = map.radarTargets.Count;
+            int next = map.targetTransformIndex;
+
+            for (int i = 0; i < count; i++)
+            {
+                next = (next + 1) % count;
+
+                var t = map.radarTargets[next];
+                if (t == null || t.transform == null) continue;
+
+                PlayerControllerB player = t.transform.GetComponent<PlayerControllerB>();
+
+                // Фильтруем "фантомных" игроков (неактивные слоты)
+                if (player != null && !player.isPlayerControlled && !player.isPlayerDead)
+                    continue;
+
+                // Устанавливаем цель (включая самого себя и радар-бустеры)
+                map.targetTransformIndex = next;
+                map.targetedPlayer = player;
+
+                return;
+            }
         }
 
+        // Блокируем автообновление только когда Freeze включен
         [HarmonyPatch(typeof(ManualCameraRenderer), "updateMapTarget")]
         [HarmonyPrefix]
-        private static bool PreventAutoUpdate(ManualCameraRenderer __instance)
+        private static bool PreventAutoUpdate()
         {
-            return !MinimalMinimap.Data.FreezeTarget;
+            if (MinimalMinimap.Data.FreezeTarget)
+                return false;
+
+            return true;
         }
 
         [HarmonyPatch(typeof(ManualCameraRenderer), "SwitchRadarTargetForward")]
