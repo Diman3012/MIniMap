@@ -13,35 +13,32 @@
 <details open>
 <summary><b>🇬🇧 English Description (Click to expand)</b></summary>
 
-> 🧩 This mod was inspired by and originally based on the work of  
-> [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**. 
-> The codebase has been significantly reworked for a minimalist HUD-based implementation with enhanced target control.
+> 🧩 This mod was inspired by and originally based on [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**. 
+> The codebase has been significantly reworked for a minimalist HUD-based implementation with persistent configuration.
 
 ## Description
-A minimalist mod for **Lethal Company** that adds a functional radar minimap directly to your HUD. Monitor your surroundings, teammates, and threats without returning to the ship.
+A minimalist mod for **Lethal Company** that integrates the ship's radar directly into your HUD. Track scrap, teammates, and monsters in real-time without needing to return to the monitor.
 
 ## ✨ Features
-* **Always Active:** The radar camera stays enabled even when you are far from the ship.
-* **Toggle Visibility:** You can now hide or show the minimap at any time.
-* **State Persistence:** The mod remembers your last choice. If you leave the map enabled, it will be enabled when you restart the game.
-* **Disabled by Default:** On the first run, the map is hidden. Use `F2` to activate it.
-* **Auto-Rotate:** The map aligns with your character's view direction for intuitive navigation.
-* **Smart Icons:** Player markers and terminal objects remain correctly oriented during camera rotation.
-* **Target Locking (Override):** Prevent the game or other players from changing your radar target automatically.
-* **Manual Switching:** Quickly cycle through radar targets directly from your HUD.
+* **Integrated UI:** The radar appears as a sleek overlay on your HUD (top-right by default).
+* **Persistent Config:** Uses BepInEx configuration. Your "Enabled" state (F2) is saved between game sessions.
+* **Auto-Rotate:** The map view rotates dynamically based on your character's looking direction.
+* **Smart Icon Correction:** Map icons and the compass rose rotate to stay upright relative to your view.
+* **Target Locking:** Automatically prevents the game from switching your radar target when you are using the minimap.
+* **Manual Cycling:** Cycle through all valid radar targets (players and boosters) using a hotkey.
+* **Death Support:** Automatically switches to spectator mode targets when you die and returns to your character upon revival.
 
 ## 🎮 Controls
 | Action | Key | Description |
 | :--- | :--- | :--- |
-| **Toggle Map** | `F2` | Shows or hides the minimap HUD (Saves state) |
-| **Toggle Override** | `F3` | Locks the current target (Prevents auto-switching) |
-| **Switch Target** | `F4` | Manually cycles to the next radar target |
+| **Toggle Minimap** | `F2` | Shows/hides the UI and saves the preference to config. |
+| **Switch Target** | `F3` | Manually cycles to the next available radar target. |
 
 ## 🛠️ Installation
 1. Install [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/).
-2. Download the **MIniMap.dll**.
+2. Download **MIniMap.dll**.
 3. Place the file into `Lethal Company/BepInEx/plugins`.
-4. Run the game once to generate the config file in `BepInEx/config/com.diman3012.minimap.cfg`.
+4. Run the game once to generate the config file: `BepInEx/config/com.diman3012.minimap.cfg`.
 
 </details>
 
@@ -50,35 +47,32 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 <details>
 <summary><b>🇷🇺 Русское описание (Нажмите, чтобы развернуть)</b></summary>
 
-> 🧩 Данный мод был вдохновлён и изначально основан на проекте  
-> [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) от **tyzeron**. 
-> Код был существенно переработан для создания минималистичной миникарты в HUD с расширенным управлением целями.
+> 🧩 Данный мод был вдохновлён и изначально основан на проекте [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) от **tyzeron**. 
+> Код был существенно переработан для создания минималистичной миникарты в HUD с полноценной системой конфигурации.
 
 ## Описание
-Минималистичный мод для **Lethal Company**, который добавляет функциональный радар прямо в ваш HUD. Следите за окружением, союзниками и угрозами, не возвращаясь на корабль.
+Минималистичный мод для **Lethal Company**, который переносит радар корабля прямо в ваш HUD. Следите за лутом, союзниками и монстрами в реальном времени, не возвращаясь к монитору на корабле.
 
 ## ✨ Особенности
-* **Постоянная работа:** Камера радара активна всегда, даже если вы глубоко в комплексе.
-* **Переключение видимости:** Вы можете скрывать или показывать миникарту по желанию.
-* **Сохранение состояния:** Мод запоминает ваш выбор. Если вы выключили карту, она останется выключенной при следующем запуске игры.
-* **Выключено по умолчанию:** При первом запуске карта скрыта. Нажмите `F2`, чтобы включить её.
-* **Авто-поворот:** Карта вращается вслед за направлением взгляда вашего персонажа.
-* **Умные иконки:** Маркеры игроков и объектов сохраняют правильную ориентацию при повороте карты.
-* **Блокировка цели (Override):** Позволяет зафиксировать камеру на определенном объекте.
-* **Ручное переключение:** Листайте цели радара прямо на ходу.
+* **Интеграция в интерфейс:** Радар отображается как аккуратное дополнение к вашему HUD (по умолчанию в верхнем правом углу).
+* **Постоянная конфигурация:** Использует BepInEx Config. Состояние "Включен" (F2) сохраняется между запусками игры.
+* **Авто-поворот:** Карта динамически вращается в зависимости от того, куда смотрит ваш персонаж.
+* **Коррекция иконок:** Иконки объектов и стрелка компаса корректируются, чтобы всегда указывать верное направление.
+* **Фиксация цели:** Мод блокирует попытки игры принудительно переключить вашу цель радара.
+* **Ручное переключение:** Вы можете листать все доступные цели (игроков и бустеры) горячей клавишей.
+* **Поддержка при смерти:** Автоматически переключается на наблюдаемую цель после смерти и возвращается к персонажу после возрождения.
 
 ## 🎮 Управление
 | Действие | Клавиша | Описание |
 | :--- | :--- | :--- |
-| **Вкл/Выкл карту** | `F2` | Скрыть/показать миникарту (настройка сохраняется) |
-| **Блокировка (Override)** | `F3` | Фиксирует текущую цель |
-| **Смена цели** | `F4` | Вручную переключает радар на следующий объект |
+| **Вкл/Выкл карту** | `F2` | Показать/скрыть миникарту (состояние сохраняется в конфиг). |
+| **Смена цели** | `F3` | Переключить радар на следующую доступную цель. |
 
 ## 🛠️ Установка
 1. Установите [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/).
 2. Скачайте файл **MIniMap.dll**.
 3. Поместите файл в папку `Lethal Company/BepInEx/plugins`.
-4. Запустите игру один раз, чтобы создался файл конфигурации в `BepInEx/config/com.diman3012.minimap.cfg`.
+4. Запустите игру один раз, чтобы создался файл конфигурации: `BepInEx/config/com.diman3012.minimap.cfg`.
 
 </details>
 
@@ -86,8 +80,8 @@ A minimalist mod for **Lethal Company** that adds a functional radar minimap dir
 
 ### 🏗️ Technical Details
 * **Namespace:** `MIniMap`
-* **Configuration:** Uses BepInEx `Config.Bind` for persistent settings.
-* **Hooks:** Patches `PlayerControllerB` for UI and `ManualCameraRenderer` for logic.
-* **Network Sync:** Includes a `NetworkPrefabPatch` for client identification using `Unity.Netcode`.
+* **Target Logic:** Patches `ManualCameraRenderer` to handle map logic and target freezing.
+* **UI Rendering:** Uses a `RawImage` component linked to the ship's map camera texture.
+* **Network Sync:** Includes `NetworkPrefabPatch` for proper identification within Unity Netcode.
 
 Created by [Diman3012](https://github.com/Diman3012)
