@@ -44,65 +44,64 @@ namespace MIniMap
         [HarmonyPostfix]
         private static void HandleHotkeys(PlayerControllerB __instance)
         {
-            // Проверка на локального игрока
             if (!__instance.IsOwner || __instance != GameNetworkManager.Instance.localPlayerController) return;
-
-            // Позволяем коду работать, если игрок мертв или контролируется
             if (!__instance.isPlayerControlled && !__instance.isPlayerDead) return;
 
-            // F2 - Вкл/Выкл миникарты
+            // F2 - Вкл/Выкл самой миникарты
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.ToggleKey))
             {
                 bool newState = !MinimalMinimap.Instance.ConfigEnabled.Value;
                 MinimalMinimap.Instance.ConfigEnabled.Value = newState;
-
-                if (minimapObject != null)
-                {
-                    minimapObject.SetActive(newState);
-                    HUDManager.Instance.DisplayTip("Minimap", newState ? "Visible" : "Hidden");
-                }
+                if (minimapObject != null) minimapObject.SetActive(newState);
             }
 
             if (!MinimalMinimap.Instance.ConfigEnabled.Value) return;
 
-            // F3 - Freeze / Override
-            if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.OverrideKey))
-            {
-                MinimalMinimap.Data.FreezeTarget = !MinimalMinimap.Data.FreezeTarget;
-                HUDManager.Instance.DisplayTip("Minimap",
-                    MinimalMinimap.Data.FreezeTarget ? "Override ON" : "Override OFF");
-            }
-
-            // F4 - Переключение вручную
+            // Кнопка F3 больше не переключает режим, так как он всегда ON.
+            // Но мы оставляем логику F4 для ручного переключения целей.
             if (UnityInput.Current.GetKeyDown(MinimalMinimap.Data.SwitchKey))
             {
-                if (MinimalMinimap.Data.FreezeTarget)
-                    SwitchTarget();
+                // Мы убрали проверку if (FreezeTarget), так как теперь мы всегда в этом режиме
+                SwitchTarget();
             }
 
-            // Логика слежения за целью спектатора после смерти
-            if (__instance.isPlayerDead && __instance.spectatedPlayerScript != null)
+            // Логика поведения при смерти и возрождении
+            if (__instance.isPlayerDead)
             {
-                // Если ручное управление выключено, синхронизируем карту с тем, на кого смотрим
+                // Если умерли — выключаем заморозку, чтобы следить за живыми
+                if (MinimalMinimap.Data.FreezeTarget)
+                    MinimalMinimap.Data.FreezeTarget = false;
+
+                if (__instance.spectatedPlayerScript != null)
+                    SetMapTargetToPlayer(__instance.spectatedPlayerScript);
+            }
+            else
+            {
+                // Если возродились, а заморозка еще выключена — включаем обратно и центрируем на себе
                 if (!MinimalMinimap.Data.FreezeTarget)
                 {
-                    var map = StartOfRound.Instance.mapScreen;
-                    if (map != null && map.targetedPlayer != __instance.spectatedPlayerScript)
+                    MinimalMinimap.Data.FreezeTarget = true;
+                    SetMapTargetToPlayer(__instance);
+                }
+            }
+        }
+
+        // Вспомогательный метод для поиска игрока (используется при смерти/возрождении)
+        private static void SetMapTargetToPlayer(PlayerControllerB target)
+        {
+            var map = StartOfRound.Instance.mapScreen;
+            if (map == null || target == null || map.targetedPlayer == target) return;
+
+            for (int i = 0; i < map.radarTargets.Count; i++)
+            {
+                var t = map.radarTargets[i];
+                if (t != null && t.transform != null)
+                {
+                    if (t.transform.GetComponent<PlayerControllerB>() == target)
                     {
-                        for (int i = 0; i < map.radarTargets.Count; i++)
-                        {
-                            var t = map.radarTargets[i];
-                            if (t != null && t.transform != null)
-                            {
-                                PlayerControllerB p = t.transform.GetComponent<PlayerControllerB>();
-                                if (p == __instance.spectatedPlayerScript)
-                                {
-                                    map.targetTransformIndex = i;
-                                    map.targetedPlayer = p;
-                                    break;
-                                }
-                            }
-                        }
+                        map.targetTransformIndex = i;
+                        map.targetedPlayer = target;
+                        break;
                     }
                 }
             }
