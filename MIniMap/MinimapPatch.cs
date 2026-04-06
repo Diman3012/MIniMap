@@ -110,7 +110,8 @@ namespace MIniMap
         private static void SwitchTarget()
         {
             var map = StartOfRound.Instance.mapScreen;
-            if (map == null || map.radarTargets == null) return;
+            if (map == null || map.radarTargets == null || map.radarTargets.Count == 0)
+                return;
 
             int count = map.radarTargets.Count;
             int next = map.targetTransformIndex;
@@ -124,11 +125,13 @@ namespace MIniMap
 
                 PlayerControllerB player = t.transform.GetComponent<PlayerControllerB>();
 
-                // Фильтруем "фантомных" игроков (неактивные слоты)
-                if (player != null && !player.isPlayerControlled && !player.isPlayerDead)
+                // Пропускаем мусор
+                if (player == null) continue;
+
+                // 👇 ВАЖНО: фильтр живых/валидных
+                if (!player.isPlayerControlled && !player.isPlayerDead)
                     continue;
 
-                // Устанавливаем цель (включая самого себя и радар-бустеры)
                 map.targetTransformIndex = next;
                 map.targetedPlayer = player;
 
@@ -136,22 +139,27 @@ namespace MIniMap
             }
         }
 
-        // Блокируем автообновление только когда Freeze включен
+        private static bool allowOneUpdate = false;
+
         [HarmonyPatch(typeof(ManualCameraRenderer), "updateMapTarget")]
         [HarmonyPrefix]
         private static bool PreventAutoUpdate()
         {
-            if (MinimalMinimap.Data.FreezeTarget)
-                return false;
+            if (allowOneUpdate)
+            {
+                allowOneUpdate = false;
+                return true;
+            }
 
-            return true;
+            return !MinimalMinimap.Data.FreezeTarget;
         }
 
         [HarmonyPatch(typeof(ManualCameraRenderer), "SwitchRadarTargetForward")]
         [HarmonyPrefix]
-        private static bool PreventForwardSwitch()
+        private static bool BlockOriginalSwitch()
         {
-            return !MinimalMinimap.Data.FreezeTarget;
+            SwitchTarget(); // твоя логика
+            return false;   // полностью блокируем игру
         }
     }
 }
