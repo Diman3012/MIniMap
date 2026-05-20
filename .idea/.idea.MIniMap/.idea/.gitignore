@@ -1,0 +1,15 @@
+﻿# Игнорируемые файлы по умолчанию
+/shelf/
+/workspace.xml
+# Игнорируемые файлы Rider
+/modules.xml
+/.idea.MIniMap.iml
+/contentModel.xml
+/projectSettingsUpdater.xml
+# HTTP-клиент на основе редактора
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
