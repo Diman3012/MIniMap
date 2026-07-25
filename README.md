@@ -1,84 +1,125 @@
 # MIniMap
 
-Минималистичная миникарта для **Lethal Company**. Мод выводит радар корабля прямо в HUD игрока, чтобы можно было следить за картой без постоянного возврата к монитору на корабле.
+[![Thunderstore](https://img.shields.io/badge/Thunderstore-minimapa%20diman3012-blue)](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue)](LICENSE)
+[![Game: Lethal Company](https://img.shields.io/badge/Game-Lethal%20Company-red)](https://store.steampowered.com/app/1966720/Lethal_Company/)
+[![BepInEx 5](https://img.shields.io/badge/BepInEx-5.x-green)](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/)
 
-Проект основан на идее и части подходов из [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) от **tyzeron**, но текущая реализация переработана под простой HUD-оверлей, BepInEx-конфиг и собственную логику переключения целей.
+Minimalist minimap mod for **Lethal Company**. Displays the ship radar directly on your HUD so you can track teammates, scrap, and threats without returning to the ship monitor.
 
-![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue)
-![Game: Lethal Company](https://img.shields.io/badge/Game-Lethal%20Company-red)
+Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**; reworked into a lightweight HUD overlay with BepInEx config and custom target-switching logic.
 
-## Возможности
+**[Download on Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/)** · **[GitHub](https://github.com/Diman3012/MIniMap)**
 
-- Миникарта отображается поверх HUD в правом верхнем углу.
-- Используется камера радара корабля и ее `RenderTexture`.
-- Состояние включения сохраняется в конфиге BepInEx.
-- Карта может автоматически поворачиваться по направлению взгляда текущей цели.
-- Иконки объектов и компас корректируются при повороте карты.
-- Цель радара фиксируется, чтобы игра не переключала ее автоматически.
-- Есть ручное переключение между доступными игроками.
-- После смерти карта может следить за наблюдаемым игроком, а после возрождения возвращается к локальному игроку.
+---
 
-## Управление
+## Features
 
-| Действие | Клавиша | Описание |
+- **HUD overlay** — radar view in the top-right corner of your screen.
+- **Persistent state** — toggle on/off with `F2`; preference saved in BepInEx config.
+- **Auto-rotate** — map rotates with the current target's view direction.
+- **Icon correction** — map icons and compass rose stay upright when the map rotates.
+- **Target locking** — prevents the game from auto-switching your radar target while the minimap is active.
+- **Manual cycling** — switch between valid radar targets with a hotkey.
+- **Death support** — follows your spectated player when dead; returns to you on respawn.
+
+## Controls
+
+| Action | Key | Description |
 | --- | --- | --- |
-| Включить или скрыть миникарту | `F2` | Меняет видимость миникарты и сохраняет состояние в конфиг. |
-| Переключить цель радара | `F3` | Переключает карту на следующего доступного игрока. |
+| Toggle minimap | `F2` | Show/hide minimap and save state to config |
+| Switch target | `F3` | Cycle to the next valid radar target |
 
-## Установка
+> Minimap is **disabled by default**. Press `F2` once after installing to enable it.
 
-1. Установите **BepInEx Pack** для Lethal Company.
-2. Соберите или скачайте `MIniMap.dll`.
-3. Поместите `MIniMap.dll` в папку:
+## Installation
+
+### Thunderstore Mod Manager (recommended)
+
+1. Install [r2modman](https://thunderstore.io/package/ebkr/r2modman/) or [Gale Mod Manager](https://thunderstore.io/c/lethal-company/p/Kastraliss/GaleModManager/).
+2. Search for **minimapa diman3012** by **SHLUHA**.
+3. Install and launch the game through the mod manager.
+
+### Manual
+
+1. Install [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/) for Lethal Company.
+2. Download `MIniMap.dll` from [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/) or build from source.
+3. Place the DLL in:
 
 ```text
-Lethal Company/BepInEx/plugins
+Lethal Company/BepInEx/plugins/
 ```
 
-4. Запустите игру один раз, чтобы появился конфиг:
+4. Launch the game once to generate the config:
 
 ```text
 BepInEx/config/com.diman3012.minimap.cfg
 ```
 
-По умолчанию миникарта выключена. Включить ее можно клавишей `F2`.
+## Configuration
 
-## Сборка
+| Option | Default | Description |
+| --- | --- | --- |
+| `Enabled` | `false` | Whether the minimap is visible (also toggled with `F2`) |
 
-Проект собирается как библиотека под **.NET Framework 4.8**.
+Additional settings (size, zoom, offsets, hotkeys) are defined in code in `MinimapData` inside `MinimalMinimap.cs`.
 
-Файл проекта использует локальные ссылки на DLL игры и BepInEx, например:
+## Building from source
 
-```text
-D:\SteamLibrary\steamapps\common\Lethal Company\...
-```
+Requires **.NET Framework 4.8** and a local Lethal Company install with BepInEx.
 
-Если игра установлена в другом месте, перед сборкой обновите `HintPath` в `MIniMap/MIniMap.csproj`.
+1. Open `MIniMap.slnx` in Visual Studio or Rider.
+2. Update `HintPath` references in `MIniMap/MIniMap.csproj` to point to your game folder.
+3. Build in **Release** configuration.
+4. Copy `MIniMap/bin/Release/MIniMap.dll` to `BepInEx/plugins/`.
 
-Основные зависимости:
+## Technical details
 
-- BepInEx
-- Harmony
-- UnityEngine
-- Unity.Netcode
-- Assembly-CSharp из Lethal Company
+| | |
+| --- | --- |
+| Plugin GUID | `com.diman3012.minimap` |
+| Plugin name | `Minimal Minimap` |
+| Version | `1.1.0` |
+| Namespace | `MIniMap` |
 
-## Технические детали
+**Key files:**
 
-- GUID плагина: `com.diman3012.minimap`
-- Название плагина: `Minimal Minimap`
-- Версия в BepInEx metadata: `1.0.0`
-- Версия сборки в `AssemblyInfo`: `1.1.0`
-- Основной namespace: `MIniMap`
-- Основные файлы:
-  - `MIniMap/MinimalMinimap.cs` - регистрация BepInEx-плагина, конфиг и сетевой prefab.
-  - `MIniMap/MinimapPatch.cs` - создание UI, горячие клавиши, переключение целей.
-  - `MIniMap/ManualCameraRendererPatch.cs` - логика камеры карты, zoom, auto-rotate и коррекция иконок.
+- `MIniMap/MinimalMinimap.cs` — BepInEx plugin, config, network prefab registration.
+- `MIniMap/MinimapPatch.cs` — HUD overlay, hotkeys, target switching, death/spectator logic.
+- `MIniMap/ManualCameraRendererPatch.cs` — map camera zoom, auto-rotate, icon correction.
 
-## История версий
+## Changelog
 
-История версий вынесена в отдельный файл: [CHANGELOG.md](CHANGELOG.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
-## Лицензия
+## License
 
-Проект распространяется по лицензии **GNU Affero General Public License v3.0**. Подробности находятся в файле `LICENSE`.
+This project is licensed under the **GNU Affero General Public License v3.0**. See [LICENSE](LICENSE) for details.
+
+---
+
+## Русский
+
+Минималистичная миникарта для **Lethal Company**. Радар корабля выводится прямо в HUD — можно следить за картой, не возвращаясь к монитору на корабле.
+
+### Возможности
+
+- Миникарта в правом верхнем углу экрана.
+- Включение/выключение по **F2**, состояние сохраняется в конфиге.
+- Автоповорот карты по направлению взгляда цели.
+- Фиксация цели радара — игра не переключает её сама.
+- **F3** — ручное переключение между игроками.
+- При смерти карта следует за наблюдаемым игроком; после возрождения возвращается к вам.
+
+### Установка
+
+1. Установите [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/).
+2. Скачайте мод с [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/) или соберите из исходников.
+3. Положите `MIniMap.dll` в `Lethal Company/BepInEx/plugins/`.
+4. Запустите игру и нажмите **F2**, чтобы включить миникарту.
+
+Конфиг: `BepInEx/config/com.diman3012.minimap.cfg`
+
+---
+
+**Author:** [Diman3012](https://github.com/Diman3012) · **Based on:** [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by tyzeron
