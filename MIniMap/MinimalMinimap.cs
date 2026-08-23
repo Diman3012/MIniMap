@@ -1,10 +1,11 @@
 ﻿using BepInEx;
-using BepInEx.Configuration; // Добавлено для работы с конфигом
+using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 using Unity.Netcode;
 using System.Reflection;
 using System.Linq;
+using GameNetcodeStuff; // Добавлено для доступа к PlayerControllerB
 
 namespace MIniMap
 {
@@ -14,7 +15,10 @@ namespace MIniMap
         public static MinimalMinimap Instance;
         public static MinimapData Data;
 
-        // Добавляем переменную конфигурации
+        // Новые переменные для отслеживания независимой цели (не ломая корабль)
+        public static PlayerControllerB CustomTarget;
+        public static int CustomTargetIndex;
+
         public ConfigEntry<bool> ConfigEnabled;
 
         private Harmony harmony;
@@ -24,8 +28,6 @@ namespace MIniMap
             Instance = this;
             Data = new MinimapData();
 
-            // Инициализация конфига: 
-            // "General" - секция, "Enabled" - ключ, false - значение по умолчанию (выключено)
             ConfigEnabled = Config.Bind("General", "Enabled", false, "Enable or disable the minimap");
 
             harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
@@ -44,9 +46,6 @@ namespace MIniMap
 
     public class MinimapData
     {
-        // Поле Enabled здесь больше не нужно, так как мы берем его из ConfigEnabled,
-        // но оставим остальные настройки.
-
         // 🔧 НАСТРОЙКИ
         public int Size = 200;
         public float XOffset = -10f;
@@ -56,9 +55,14 @@ namespace MIniMap
 
         // 🎮 УПРАВЛЕНИЕ
         public bool FreezeTarget = true;
-        
+
         public KeyCode SwitchKey = KeyCode.F3;
         public KeyCode ToggleKey = KeyCode.F2;
+
+        // 🔍 НОВЫЕ НАСТРОЙКИ ЗУМА
+        public KeyCode ZoomKey = KeyCode.F4; // Клавиша зума
+        public float[] ZoomLevels = new float[3] { 60f, 40f, 20f };
+        public int currentZoomIndex;
     }
 
     [HarmonyPatch(typeof(NetworkManager))]
