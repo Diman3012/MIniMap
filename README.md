@@ -1,36 +1,55 @@
 # MIniMap
 
 [![Thunderstore](https://img.shields.io/badge/Thunderstore-minimapa%20diman3012-blue)](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/)
+[![GitHub: invertigo260](https://img.shields.io/badge/GitHub-invertigo260-black?logo=github)](https://github.com/invertigo260)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue)](LICENSE)
 [![Game: Lethal Company](https://img.shields.io/badge/Game-Lethal%20Company-red)](https://store.steampowered.com/app/1966720/Lethal_Company/)
 [![BepInEx 5](https://img.shields.io/badge/BepInEx-5.x-green)](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/)
 
 Minimalist minimap mod for **Lethal Company**. Displays the ship radar directly on your HUD so you can track teammates, scrap, and threats without returning to the ship monitor.
+Minimalist minimap mod for **Lethal Company**. Displays the ship radar directly on your HUD so you can track teammates, scrap, and threats without returning to the ship monitor.
 
 Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**; reworked into a lightweight HUD overlay with BepInEx config and custom target-switching logic.
 
-**[Download on Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/)** · **[GitHub](https://github.com/Diman3012/MIniMap)**
+> **Note:** Starting from version **1.1.6**, **[invertigo260](https://github.com/invertigo260)** joined the development, completely overhauling the camera system, zoom levels, target tracking logic, and input handling.
+
+**[Download on Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/)** · **[GitHub (Diman3012)](https://github.com/Diman3012/MIniMap)** · **[GitHub (invertigo260)](https://github.com/invertigo260)**
 
 ---
 
 ## Features
 
 - **HUD overlay** — radar view in the top-right corner of your screen.
-- **Persistent state** — toggle on/off with `F2`; preference saved in BepInEx config.
-- **Auto-rotate** — map rotates with the current target's view direction.
-- **Icon correction** — map icons and compass rose stay upright when the map rotates.
-- **Target locking** — prevents the game from auto-switching your radar target while the minimap is active.
-- **Manual cycling** — switch between valid radar targets with a hotkey.
-- **Death support** — follows your spectated player when dead; returns to you on respawn.
+- **Independent Minimap Camera (v1.1.6+)** — separate Camera and RenderTexture wired directly into the minimap UI to avoid interfering with the ship's main monitor.
+- **Separate Target Tracking (v1.1.6+)** — uses `CustomTarget`/`CustomTargetIndex` so cycling minimap targets no longer disrupts ship radar operations.
+- **Zoom Controls (v1.1.6+)** — dynamic zoom level cycling on hotkey press.
+- **Smart Resource Management (v1.1.6+)** — automatically disables the camera during ship phase to save system resources.
+- **Persistent State** — toggle on/off with `F2`; preference saved in BepInEx config.
+- **Typing Protection (v1.1.6+)** — hotkeys are automatically suppressed while typing in chat or using the terminal.
+- **HUD Tip Feedback (v1.1.6+)** — displays a visual HUD tip notification when toggling the minimap.
+- **Auto-rotate & Icon Correction** — map rotates with target view while keeping icons upright.
 
 ## Controls
 
 | Action | Key | Description |
 | --- | --- | --- |
-| Toggle minimap | `F2` | Show/hide minimap and save state to config |
-| Switch target | `F3` | Cycle to the next valid radar target |
+| Toggle minimap | `F2` | Show/hide minimap, show HUD tip, and save state to config |
+| Switch target | `F3` | Cycle through valid minimap targets independently |
+| Zoom minimap | `F4` | Cycle through available zoom levels (`ZoomLevels`) |
 
-> Minimap is **disabled by default**. Press `F2` once after installing to enable it.
+---
+
+## Developer Contributions (v1.1.6 Update by invertigo260)
+
+The v1.1.6 release introduces major structural improvements designed and implemented by **[invertigo260](https://github.com/invertigo260)**:
+
+- **Independent Camera & RenderTexture:** Created a dedicated camera system wired into the minimap UI, complete with full lifecycle management (initialization, recreation, and resource release). Automatically powers off during the ship phase to minimize performance impact.
+- **Decoupled Target Tracking (`CustomTarget` / `CustomTargetIndex`):** Implemented standalone target state handling and `SwitchKey` processing, making the minimap completely independent of ship radar selection.
+- **Zoom & Positioning Pipeline:** Integrated `ZoomKey`, `ZoomLevels`, and `currentZoomIndex` cycling, alongside a per-frame `UpdateMinimapCamera` method to control positioning and rotation smoothly.
+- **Input & UX Improvements:** Added context-aware input checks that block hotkey activation while typing or using the terminal, and added instant HUD tips on state toggle.
+- **Refactoring:** Removed legacy update logic and obsolete blocking patches for cleaner code execution.
+
+---
 
 ## Installation
 
@@ -43,54 +62,16 @@ Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinim
 ### Manual
 
 1. Install [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/) for Lethal Company.
-2. Download `MIniMap.dll` from [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/) or build from source.
-3. Place the DLL in:
+2. Download `MIniMap.dll` from [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/).
+3. Place `MIniMap.dll` in `Lethal Company/BepInEx/plugins/`.
 
-```text
-Lethal Company/BepInEx/plugins/
-```
+---
 
-4. Launch the game once to generate the config:
+## Authors & Credits
 
-```text
-BepInEx/config/com.diman3012.minimap.cfg
-```
-
-## Configuration
-
-| Option | Default | Description |
-| --- | --- | --- |
-| `Enabled` | `false` | Whether the minimap is visible (also toggled with `F2`) |
-
-Additional settings (size, zoom, offsets, hotkeys) are defined in code in `MinimapData` inside `MinimalMinimap.cs`.
-
-## Building from source
-
-Requires **.NET Framework 4.8** and a local Lethal Company install with BepInEx.
-
-1. Open `MIniMap.slnx` in Visual Studio or Rider.
-2. Update `HintPath` references in `MIniMap/MIniMap.csproj` to point to your game folder.
-3. Build in **Release** configuration.
-4. Copy `MIniMap/bin/Release/MIniMap.dll` to `BepInEx/plugins/`.
-
-## Technical details
-
-| | |
-| --- | --- |
-| Plugin GUID | `com.diman3012.minimap` |
-| Plugin name | `Minimal Minimap` |
-| Version | `1.1.0` |
-| Namespace | `MIniMap` |
-
-**Key files:**
-
-- `MIniMap/MinimalMinimap.cs` — BepInEx plugin, config, network prefab registration.
-- `MIniMap/MinimapPatch.cs` — HUD overlay, hotkeys, target switching, death/spectator logic.
-- `MIniMap/ManualCameraRendererPatch.cs` — map camera zoom, auto-rotate, icon correction.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md).
+- **[Diman3012 / SHLUHA](https://github.com/Diman3012)** — Original author & project maintainer.
+- **[invertigo260](https://github.com/invertigo260)** — Co-developer (v1.1.6+ independent camera architecture, target/zoom controls, QoL improvements).
+- **[tyzeron](https://github.com/tyzeron/LethalCompanyMinimap)** — Original minimap concept inspiration.
 
 ## License
 
@@ -100,26 +81,13 @@ This project is licensed under the **GNU Affero General Public License v3.0**. S
 
 ## Русский
 
-Минималистичная миникарта для **Lethal Company**. Радар корабля выводится прямо в HUD — можно следить за картой, не возвращаясь к монитору на корабле.
+Минималистичная миникарта для **Lethal Company**. 
 
-### Возможности
+Начиная с версии **1.1.6**, в разработке мода принимает участие **[invertigo260](https://github.com/invertigo260)**, полностью переработавший архитектуру камеры, систему зума и логику целей.
 
-- Миникарта в правом верхнем углу экрана.
-- Включение/выключение по **F2**, состояние сохраняется в конфиге.
-- Автоповорот карты по направлению взгляда цели.
-- Фиксация цели радара — игра не переключает её сама.
-- **F3** — ручное переключение между игроками.
-- При смерти карта следует за наблюдаемым игроком; после возрождения возвращается к вам.
-
-### Установка
-
-1. Установите [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/).
-2. Скачайте мод с [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/) или соберите из исходников.
-3. Положите `MIniMap.dll` в `Lethal Company/BepInEx/plugins/`.
-4. Запустите игру и нажмите **F2**, чтобы включить миникарту.
-
-Конфиг: `BepInEx/config/com.diman3012.minimap.cfg`
-
----
-
-**Author:** [Diman3012](https://github.com/Diman3012) · **Based on:** [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by tyzeron
+### Что нового сделал invertigo260 (v1.1.6+):
+- **Независимая камера и RenderTexture:** Камера миникарты работает отдельно от судового монитора, ресурсоемкость оптимизирована (отключается во время фазы корабля).
+- **Собственные цели (`CustomTarget` / `CustomTargetIndex`):** Переключение целей на миникарте больше не сбивает радар на корабле.
+- **Система зума:** Добавлено цикличное изменение масштаба карт (`ZoomKey`, `ZoomLevels`, `currentZoomIndex`) и логика `UpdateMinimapCamera`.
+- **Улучшенный ввод:** Горячие клавиши больше не срабатывают при наборе текста в чате или терминале.
+- **HUD-уведомления:** При переключении миникарты высвечивается подсказка на экране.
