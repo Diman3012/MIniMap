@@ -5,7 +5,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Reflection;
 using System.Linq;
-using GameNetcodeStuff; // Добавлено для доступа к PlayerControllerB
+using GameNetcodeStuff;
 
 namespace MIniMap
 {
@@ -15,7 +15,6 @@ namespace MIniMap
         public static MinimalMinimap Instance;
         public static MinimapData Data;
 
-        // Новые переменные для отслеживания независимой цели (не ломая корабль)
         public static PlayerControllerB CustomTarget;
         public static int CustomTargetIndex;
 
@@ -55,12 +54,13 @@ namespace MIniMap
 
         // 🎮 УПРАВЛЕНИЕ
         public bool FreezeTarget = true;
+        public bool IsEditMode = false; // Режим редактирования
 
         public KeyCode SwitchKey = KeyCode.F3;
         public KeyCode ToggleKey = KeyCode.F2;
 
         // 🔍 НОВЫЕ НАСТРОЙКИ ЗУМА
-        public KeyCode ZoomKey = KeyCode.F4; // Клавиша зума
+        public KeyCode ZoomKey = KeyCode.F4;
         public float[] ZoomLevels = new float[3] { 60f, 40f, 20f };
         public int currentZoomIndex;
     }

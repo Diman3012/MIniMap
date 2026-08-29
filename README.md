@@ -7,7 +7,6 @@
 [![BepInEx 5](https://img.shields.io/badge/BepInEx-5.x-green)](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/)
 
 Minimalist minimap mod for **Lethal Company**. Displays the ship radar directly on your HUD so you can track teammates, scrap, and threats without returning to the ship monitor.
-Minimalist minimap mod for **Lethal Company**. Displays the ship radar directly on your HUD so you can track teammates, scrap, and threats without returning to the ship monitor.
 
 Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinimap) by **tyzeron**; reworked into a lightweight HUD overlay with BepInEx config and custom target-switching logic.
 
@@ -20,6 +19,7 @@ Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinim
 ## Features
 
 - **HUD overlay** — radar view in the top-right corner of your screen.
+- **Interactive Edit Mode (v1.1.6+)** — Hold `F2` for 2 seconds to unlock the cursor. Drag the map to reposition it on your screen, or drag its edges to dynamically resize it while maintaining a perfect square.
 - **Independent Minimap Camera (v1.1.6+)** — separate Camera and RenderTexture wired directly into the minimap UI to avoid interfering with the ship's main monitor.
 - **Separate Target Tracking (v1.1.6+)** — uses `CustomTarget`/`CustomTargetIndex` so cycling minimap targets no longer disrupts ship radar operations.
 - **Zoom Controls (v1.1.6+)** — dynamic zoom level cycling on hotkey press.
@@ -33,7 +33,10 @@ Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinim
 
 | Action | Key | Description |
 | --- | --- | --- |
-| Toggle minimap | `F2` | Show/hide minimap, show HUD tip, and save state to config |
+| Toggle minimap | `F2` (Press) | Show/hide minimap, show HUD tip, and save state to config |
+| Edit Mode | `F2` (Hold 2s) | Enable/disable UI editing. Unlocks the mouse cursor to customize the map |
+| Move Map | `Left Click (Drag)` | Click and drag inside the map during Edit Mode to move it around the screen |
+| Resize Map | `Left Click (Edges)` | Click and drag the edges of the map during Edit Mode to scale its size |
 | Switch target | `F3` | Cycle through valid minimap targets independently |
 | Zoom minimap | `F4` | Cycle through available zoom levels (`ZoomLevels`) |
 
@@ -43,6 +46,7 @@ Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinim
 
 The v1.1.6 release introduces major structural improvements designed and implemented by **[invertigo260](https://github.com/invertigo260)**:
 
+- **Interactive UI Edit Mode:** Designed a Canvas-aware scaling system to convert screen space coordinates to local UI positions, allowing players to drag and resize the minimap in real-time without breaking player look inputs.
 - **Independent Camera & RenderTexture:** Created a dedicated camera system wired into the minimap UI, complete with full lifecycle management (initialization, recreation, and resource release). Automatically powers off during the ship phase to minimize performance impact.
 - **Decoupled Target Tracking (`CustomTarget` / `CustomTargetIndex`):** Implemented standalone target state handling and `SwitchKey` processing, making the minimap completely independent of ship radar selection.
 - **Zoom & Positioning Pipeline:** Integrated `ZoomKey`, `ZoomLevels`, and `currentZoomIndex` cycling, alongside a per-frame `UpdateMinimapCamera` method to control positioning and rotation smoothly.
@@ -86,6 +90,7 @@ This project is licensed under the **GNU Affero General Public License v3.0**. S
 Начиная с версии **1.1.6**, в разработке мода принимает участие **[invertigo260](https://github.com/invertigo260)**, полностью переработавший архитектуру камеры, систему зума и логику целей.
 
 ### Что нового сделал invertigo260 (v1.1.6+):
+- **Интерактивный режим редактирования:** Удерживайте `F2` в течение 2 секунд, чтобы разблокировать курсор. Карту можно перемещать по экрану левой кнопкой мыши и изменять её размер, потянув за края.
 - **Независимая камера и RenderTexture:** Камера миникарты работает отдельно от судового монитора, ресурсоемкость оптимизирована (отключается во время фазы корабля).
 - **Собственные цели (`CustomTarget` / `CustomTargetIndex`):** Переключение целей на миникарте больше не сбивает радар на корабле.
 - **Система зума:** Добавлено цикличное изменение масштаба карт (`ZoomKey`, `ZoomLevels`, `currentZoomIndex`) и логика `UpdateMinimapCamera`.
