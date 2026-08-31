@@ -29,6 +29,8 @@ Inspired by [LethalCompanyMinimap](https://github.com/tyzeron/LethalCompanyMinim
 - **HUD Tip Feedback (v1.1.6+)** — displays a visual HUD tip notification when toggling the minimap.
 - **Auto-rotate & Icon Correction** — map rotates with target view while keeping icons upright.
 
+---
+
 ## Controls
 
 | Action | Key | Description |
@@ -55,44 +57,14 @@ The v1.1.6 release introduces major structural improvements designed and impleme
 
 ---
 
-## Installation
-
-### Thunderstore Mod Manager (recommended)
-
-1. Install [r2modman](https://thunderstore.io/package/ebkr/r2modman/) or [Gale Mod Manager](https://thunderstore.io/c/lethal-company/p/Kastraliss/GaleModManager/).
-2. Search for **minimapa diman3012** by **SHLUHA**.
-3. Install and launch the game through the mod manager.
-
-### Manual
-
-1. Install [BepInEx Pack](https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/) for Lethal Company.
-2. Download `MIniMap.dll` from [Thunderstore](https://thunderstore.io/c/lethal-company/p/SHLUHA/minimapa_diman3012/).
-3. Place `MIniMap.dll` in `Lethal Company/BepInEx/plugins/`.
-
----
-
 ## Authors & Credits
 
 - **[Diman3012 / SHLUHA](https://github.com/Diman3012)** — Original author & project maintainer.
 - **[invertigo260](https://github.com/invertigo260)** — Co-developer (v1.1.6+ independent camera architecture, target/zoom controls, QoL improvements).
 - **[tyzeron](https://github.com/tyzeron/LethalCompanyMinimap)** — Original minimap concept inspiration.
 
+---
+
 ## License
 
 This project is licensed under the **GNU Affero General Public License v3.0**. See [LICENSE](LICENSE) for details.
-
----
-
-## Русский
-
-Минималистичная миникарта для **Lethal Company**. 
-
-Начиная с версии **1.1.6**, в разработке мода принимает участие **[invertigo260](https://github.com/invertigo260)**, полностью переработавший архитектуру камеры, систему зума и логику целей.
-
-### Что нового сделал invertigo260 (v1.1.6+):
-- **Интерактивный режим редактирования:** Удерживайте `F2` в течение 2 секунд, чтобы разблокировать курсор. Карту можно перемещать по экрану левой кнопкой мыши и изменять её размер, потянув за края.
-- **Независимая камера и RenderTexture:** Камера миникарты работает отдельно от судового монитора, ресурсоемкость оптимизирована (отключается во время фазы корабля).
-- **Собственные цели (`CustomTarget` / `CustomTargetIndex`):** Переключение целей на миникарте больше не сбивает радар на корабле.
-- **Система зума:** Добавлено цикличное изменение масштаба карт (`ZoomKey`, `ZoomLevels`, `currentZoomIndex`) и логика `UpdateMinimapCamera`.
-- **Улучшенный ввод:** Горячие клавиши больше не срабатывают при наборе текста в чате или терминале.
-- **HUD-уведомления:** При переключении миникарты высвечивается подсказка на экране.
