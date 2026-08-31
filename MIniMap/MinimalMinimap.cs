@@ -5,7 +5,6 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Reflection;
 using System.Linq;
-using GameNetcodeStuff;
 
 namespace MIniMap
 {
@@ -15,10 +14,12 @@ namespace MIniMap
         public static MinimalMinimap Instance;
         public static MinimapData Data;
 
-        public static PlayerControllerB CustomTarget;
-        public static int CustomTargetIndex;
-
+        // Конфигурационные параметры BepInEx
         public ConfigEntry<bool> ConfigEnabled;
+        public ConfigEntry<float> ConfigZoom;
+        public ConfigEntry<int> ConfigSize;
+        public ConfigEntry<float> ConfigXOffset;
+        public ConfigEntry<float> ConfigYOffset;
 
         private Harmony harmony;
 
@@ -27,7 +28,18 @@ namespace MIniMap
             Instance = this;
             Data = new MinimapData();
 
-            ConfigEnabled = Config.Bind("General", "Enabled", false, "Enable or disable the minimap");
+            // Привязка настроек к файлу конфигурации
+            ConfigEnabled = Config.Bind("General", "Enabled", true, "Enable or disable the minimap");
+            ConfigZoom = Config.Bind("General", "Zoom", 20f, "Camera Orthographic Zoom ( lower = closer )");
+            ConfigSize = Config.Bind("General", "Size", 200, "Minimap UI width and height");
+            ConfigXOffset = Config.Bind("General", "XOffset", -10f, "Minimap X position offset");
+            ConfigYOffset = Config.Bind("General", "YOffset", -10f, "Minimap Y position offset");
+
+            // Инициализация стартовых значений из файла конфига
+            Data.Zoom = ConfigZoom.Value;
+            Data.Size = ConfigSize.Value;
+            Data.XOffset = ConfigXOffset.Value;
+            Data.YOffset = ConfigYOffset.Value;
 
             harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
@@ -40,7 +52,7 @@ namespace MIniMap
     {
         public const string PLUGIN_GUID = "com.diman3012.minimap";
         public const string PLUGIN_NAME = "Minimal Minimap";
-        public const string PLUGIN_VERSION = "1.0.0";
+        public const string PLUGIN_VERSION = "1.1.6";
     }
 
     public class MinimapData
@@ -52,17 +64,14 @@ namespace MIniMap
         public float Zoom = 20f;
         public bool AutoRotate = true;
 
+        // Флаг для режима перемещения
+        public bool IsEditMode = false;
+
         // 🎮 УПРАВЛЕНИЕ
         public bool FreezeTarget = true;
-        public bool IsEditMode = false; // Режим редактирования
 
         public KeyCode SwitchKey = KeyCode.F3;
         public KeyCode ToggleKey = KeyCode.F2;
-
-        // 🔍 НОВЫЕ НАСТРОЙКИ ЗУМА
-        public KeyCode ZoomKey = KeyCode.F4;
-        public float[] ZoomLevels = new float[3] { 60f, 40f, 20f };
-        public int currentZoomIndex;
     }
 
     [HarmonyPatch(typeof(NetworkManager))]
